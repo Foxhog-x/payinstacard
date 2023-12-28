@@ -1,22 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../model/userLoginModel");
-const { body, validationResult } = require("express-validator");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const secret = "issecret";
 
 router.post(
   "/login",
-  [body("email").isEmail(), body("password").isLength({ min: 8 })],
+
   async (req, res) => {
-    const result = await validationResult(req);
     var email = req.body.email;
-    if (!result.isEmpty()) {
-      return res.status(400).json({ result: result.array() });
-    }
+    var pass = req.body.password;
+    console.log(email, pass, "req body");
+
     try {
       let userdata = await User.findOne({ email });
+      console.log(userdata);
       if (!userdata) {
         return res
           .status(400)
@@ -36,11 +36,11 @@ router.post(
         };
         authToken = jwt.sign(data, secret);
 
-        return res.json({ sucess: true, authToken: authToken });
+        return res.json({ success: true, authToken: authToken });
       }
     } catch (error) {
       console.log(error);
-      res.json({ sucess: false });
+      res.json({ success: false });
     }
   }
 );

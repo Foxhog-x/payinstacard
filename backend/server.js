@@ -6,10 +6,12 @@ const app = express();
 const PORT = 5000;
 app.use(cors());
 app.use(express.json());
-app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect("mongodb://127.0.0.1/payinstacard");
+mongoose.connect(
+  "mongodb+srv://nicehashminer7744:Wjj2GQa3LKxWJIwQ@cluster0.29rw9zc.mongodb.net/payinstacard?retryWrites=true&w=majority"
+);
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("connected to db"));

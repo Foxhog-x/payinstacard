@@ -99,3 +99,12 @@ body {
     padding: 40px 15px 15px 15px;
   }
 }
+.griddiv {
+  display: grid;
+  align-items: center;
+  place-content: center;
+  height: 100vh;
+}
+button {
+  margin: 10px;
+}

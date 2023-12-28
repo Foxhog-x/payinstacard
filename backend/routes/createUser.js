@@ -4,24 +4,24 @@ const router = express.Router();
 const User = require("../model/userLoginModel");
 const bycrypt = require("bcrypt");
 
-router.post("/createuser", async (req, res) => {
-  const salt = await bycrypt.genSalt(10);
-  const bycryptPassword = await bycrypt.hash(req.body.password, salt);
-  console.log(req.body);
-  const user = new User({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: bycryptPassword,
-  });
+router.post(
+  "/createuser",
 
-  try {
-    const newUser = await user.save();
-    res.status(201).json(newUser);
-  } catch (error) {
-    console.error({ message: error.message });
-    res.status(400);
+  async (req, res) => {
+    const salt = await bycrypt.genSalt(10);
+    const bycryptPassword = await bycrypt.hash(req.body.password, salt);
+
+    try {
+      await User.create({
+        email: req.body.email,
+        password: bycryptPassword,
+      });
+      res.status(201).json({ sucess: true });
+    } catch (error) {
+      console.log(error);
+      res.status(201).json({ sucess: false });
+    }
   }
-});
+);
 
 module.exports = router;

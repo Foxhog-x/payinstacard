@@ -1,12 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css";
+import { Link, useNavigate } from "react-router-dom";
+
 export const Loginpage = () => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
   console.log(loginData);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
 
+  const token = localStorage.getItem("authToken");
+  console.log(token);
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    } else {
+      navigate("/");
+    }
+  }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: loginData.email,
+        password: loginData.password,
+      }),
+    });
+
+    const jsonObj = await response.json();
+    if (!jsonObj) {
+      window.alert("a wrong crendentials");
+    }
+    if (jsonObj.success) {
+      localStorage.clear();
+      localStorage.setItem("authToken", jsonObj.authToken);
+      console.log("success");
+      navigate("/");
+    }
+  };
   const onChange = (event) => {
     setLoginData({ ...loginData, [event.target.name]: event.target.value });
   };
@@ -48,7 +82,8 @@ export const Loginpage = () => {
         </button>
       </form>
       <div className="text-center fs-6">
-        <a href="#">Forget password?</a> or <a href="#">Sign up</a>
+        {/* <a href="#">Forget password?</a> or <a href="#">Sign up</a> */}
+        <Link to={"/signup"}>signUp</Link>
       </div>
     </div>
   );
